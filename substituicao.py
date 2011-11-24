@@ -32,18 +32,3 @@ mapa = {'a': 'G', 'c': 'R', 'b': 'A', 'e': 'U', 'd': 'T', 'g': 'N', 'f': 'F',\
  'i': 'K', 'h': 'I', 'k': 'Q', 'j': 'O', 'm': 'S', 'l': 'Z', 'o': 'W', 'n': 'H',\
  'q': 'B', 'p': 'C', 's': 'X', 'r': 'D', 'u': 'L', 't': 'J', 'w': 'V', 'v': 'E', 'y': 'M', 'x': 'P', 'z': 'Y'}
 
-
-print "Informe uma opcao: "
-print "1 - Codificar"
-print "2 - Decodificar"
-print "3 - Ver mapa de caracteres"
-opt = raw_input("Opcao: ")
-if int(opt) == 1:
-	entrada = raw_input("Informe a palavra ou frase: ")
-	print dcript(entrada.lower(), mapa)
-if int(opt) == 2:
-	entrada = raw_input("Informe a palavra ou frase: ")
-	print cript(entrada, mapa)
-if int(opt) == 3:
-	print mapa
-
