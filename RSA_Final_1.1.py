@@ -1,3 +1,6 @@
+# -*- coding: utf-8 -*-
+from random import choice
+
 def gcd(a,b):
     "Retorna o divisor comum entre a e b pelo algoritmo euclidiano"
     while b:
