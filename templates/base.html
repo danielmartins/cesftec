@@ -55,7 +55,34 @@
                 </div>
                 <div class="row">
                     <div class="six columns">
-                        <form action="{% url cesar %}" method="post" id="cesarForm" class="nice">{% csrf_token %}
+                        <form action="{% url home_tipo 'rsa' %}" method="post" id="cesarForm" class="nice">{% csrf_token %}
+                            {{ cesar_form.as_p }}
+                            <a id="doCesarEncrytp" class="nice small radius white button">Criptografar</a>
+                        </form>
+                    </div>
+                    <div class="six columns">
+                        {% if msg_criptografada %}
+                        <h3>Encriptografada</h3>
+                        <p id="msgEncriptografada">{{ msg_criptografada }}</p>
+                        <a id="doCesarUncrytp" class="nice small radius white button">Descriptografar</a>
+                        <br/>
+                        <h3>Descriptografada</h3>
+                        <p id="msgDescriptografada"></p>
+                        {% endif %}
+                    </div>
+                </div>
+                
+                <h3>Algoritmo de RSA</h3>
+                <div class="row">
+                    <div class="twelve columns">
+                        <div class="panel">
+                            <p>Algoritmo RSA</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="six columns">
+                        <form action="{% url home_tipo 'cesar' %}" method="post" id="cesarForm" class="nice">{% csrf_token %}
                             {{ cesar_form.as_p }}
                             <a id="doCesarEncrytp" class="nice small radius white button">Criptografar</a>
                         </form>

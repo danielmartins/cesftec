@@ -14,3 +14,11 @@ class CesarForm(forms.Form):
             if not str(self.cleaned_data['chave']).isdigit():
                 raise ValidationError(u"A chave deve ser um número inteiro")
         return self.cleaned_data['chave']
+    
+
+class RsaForm(forms.Form):
+    
+    mensagem = forms.CharField(max_length=100, widget=forms.TextInput(attrs={'class': 'input-text'}))
+    p = forms.CharField(max_length=2, widget=forms.TextInput(attrs={'class': 'input-text small'}))
+    q = forms.CharField(max_length=2, widget=forms.TextInput(attrs={'class': 'input-text small'}))
+    
