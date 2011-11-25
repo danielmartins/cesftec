@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.shortcuts import render_to_response, redirect, HttpResponse
-from random import random
+from django.template.context import RequestContext
+from forms import CesarForm
 import string
 
 class CesarEncrypt(object):
@@ -46,8 +47,9 @@ def cesar(request):
     """
     msg2encrypt = "teste"
     crypto = CesarEncrypt(msg2encrypt, 3)
-    
-    return HttpResponse(crypto.encriptografar() + "<br/>" + crypto.descriptografar())
+    form = CesarForm()
+    #return HttpResponse(crypto.encriptografar() + "<br/>" + crypto.descriptografar())
+    return render_to_response('base.html', {"cesar_form": form}, context_instance=RequestContext(request))
 
 
 
