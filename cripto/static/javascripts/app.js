@@ -14,7 +14,7 @@ $(document).ready(function() {
 	
 	$("#doCesarUncrytp").click(function(){
 	    var data = { msg: $("#msgEncriptografada").html() };
-        $.get("/cesftec/cesar/decrypt/", data, function(data, textStatus, xhr){
+        $.get("/cesftec/home/cesar/decrypt/", data, function(data, textStatus, xhr){
             $('#msgDescriptografada').html(data);
             console.log(textStatus);
         });

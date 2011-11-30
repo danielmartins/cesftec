@@ -26,7 +26,7 @@ def home(request, tipo=None):
     return render_to_response('base.html', viewData,
                               context_instance=RequestContext(request))
     
-def home_uncrypt(request):
+def home_uncrypt(request, tipo):
     if request.method == 'GET':
         if request.session.get('cesar_msg_criptografada', '') <> '':
             crypto = CesarEncrypt(request.session['cesar_key'])
