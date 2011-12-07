@@ -36,10 +36,6 @@ class TransposicaoEncrypt(object):
             msg = self.fill(msg, size)
         msgList = list(msg)
         
-        print(msg)
-        print(len(msg))
-        print(size)
-            
         for l in msgList:
             if c < size - 1:
                 line.append(l)
@@ -50,11 +46,8 @@ class TransposicaoEncrypt(object):
                 c = 0
                 line = []
         
-        pprint(self.matrix)
         self.encrypted = []
         order, pos = self.mount_keyOrder(key)
-        print(order)
-        print(pos)
         for p in pos:
             for row in self.matrix:
                 self.encrypted.append(row[p])
@@ -65,57 +58,39 @@ class TransposicaoEncrypt(object):
         return txtEncrypted
         
     def decrypt(self, msg, key):
-        size = len(key)
-        lines = []
-        line = []
-        c = 0
-        for l in msg:
-            if c < size - 2:
-                line.append(l)
-                c += 1
-            else:
-                line.append(l)
-                lines.append(line)
-                c = 0
-                line = []
-        pprint(lines)
+        sizeKey = len(key)
+        sizeMsg = len(msg)
+        r = sizeMsg / sizeKey
+        
+        # Cria uma matriz colunasXlinhas
+        table = [ [0 for i in range(sizeKey)] for j in range(r) ]
+        
+        numLinhas = len(table)
+        
         order, pos = self.mount_keyOrder(key)
         
-        dlines = []
-        d = []
-        mx_n = len(lines[0])
-        n = 0
-        must_break = False
-        for i in range(len(lines)-1):
-            for l in lines:
-                if n < mx_n:
-                    d.append(l[n])
-                else:
-                    must_break = True
-                    
-            if must_break:
-                break
-            n += 1
-            dlines.append(d)
-            d = []
-
-        pprint("d ->" + str(dlines))
+        count_pos = r # numero de linhas é  
+        for p in pos:
+            # p numero da coluna 
+            if count_pos > r:
+                aux = count_pos - r
+                partMsg = msg[aux:count_pos]
+                count_pos = count_pos + r
+            else:
+                partMsg = msg[:count_pos]
+                count_pos = count_pos + r
+                
+            
+            for letra, linha in zip(partMsg, range(numLinhas)):
+                table[linha][p] = letra
         
-        decrypted = []
-        dline = [0] * size
-        for dl in dlines:
-            for l, p in zip(dl, pos):
-                dline[p] = l
-            decrypted.append(dline)
-            dline = [0] * size
         
         txtDecrypted = ""
-        for dl in decrypted:
-            for l in dl:
-                txtDecrypted += l 
+        for linha in table:
+            for letra in linha:
+                txtDecrypted += letra
         
         return txtDecrypted
-                
     
     def is_multiplo(self, msg, size):
         """
@@ -272,9 +247,10 @@ class RSAEncrypt(object):
 
 if __name__ == "__main__":
     trans = TransposicaoEncrypt()
-    cipher_msg = trans.encrypt("Vamos embora fomos descobertos porra", "zebras")
+    cipher_msg = trans.encrypt("Vamos embora fomos descobertos, a casa caiu playboy... e nois na fita", "zera")
     print(cipher_msg)
-    print(trans.decrypt(cipher_msg, "zebras"))
+    print(trans.decrypt(cipher_msg, "zera"))
+    
 #    print "Algoritmo de criptografia RSA"
 #    p = long(raw_input("Valor de p (numero primo):"))
 #    q = long(raw_input("Valor de q (numero primo):"))
