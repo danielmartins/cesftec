@@ -1,8 +1,140 @@
 # -*- coding: utf-8 -*-
 
-from random import choice
+from random import choice, randint
 import string
+from pprint import pprint
 
+class TransposicaoEncrypt(object):
+    
+    def __init__(self):
+        self.alfa = list(string.ascii_lowercase)
+        
+    def mount_keyOrder(self, key):
+        order = []
+        pos = []
+        # Numera a ordem das letras do alfabeto
+        for l in key:
+            order.append(self.alfa.index(l))
+            
+        # Pega do mais próximo do inicio do alfabeto
+        num_max = max(order)
+        for i in range(num_max+1):
+            if i in order:
+                pos.append(order.index(i))
+        
+        return (order, pos)
+    
+    def encrypt(self, msg, key):
+        msg = msg.replace(' ', '')
+        msg = msg.lower()
+        self.matrix = []
+        line = []
+        size = len(key)
+        
+        c = 0
+        if not self.is_multiplo(msg, size):
+            msg = self.fill(msg, size)
+        msgList = list(msg)
+        
+        print(msg)
+        print(len(msg))
+        print(size)
+            
+        for l in msgList:
+            if c < size - 1:
+                line.append(l)
+                c += 1
+            else:
+                line.append(l)
+                self.matrix.append(line)
+                c = 0
+                line = []
+        
+        pprint(self.matrix)
+        self.encrypted = []
+        order, pos = self.mount_keyOrder(key)
+        print(order)
+        print(pos)
+        for p in pos:
+            for row in self.matrix:
+                self.encrypted.append(row[p])
+        
+        txtEncrypted = ""        
+        for l in self.encrypted:
+            txtEncrypted += l
+        return txtEncrypted
+        
+    def decrypt(self, msg, key):
+        size = len(key)
+        lines = []
+        line = []
+        c = 0
+        for l in msg:
+            if c < size - 2:
+                line.append(l)
+                c += 1
+            else:
+                line.append(l)
+                lines.append(line)
+                c = 0
+                line = []
+        pprint(lines)
+        order, pos = self.mount_keyOrder(key)
+        
+        dlines = []
+        d = []
+        mx_n = len(lines[0])
+        n = 0
+        must_break = False
+        for i in range(len(lines)-1):
+            for l in lines:
+                if n < mx_n:
+                    d.append(l[n])
+                else:
+                    must_break = True
+                    
+            if must_break:
+                break
+            n += 1
+            dlines.append(d)
+            d = []
+
+        pprint("d ->" + str(dlines))
+        
+        decrypted = []
+        dline = [0] * size
+        for dl in dlines:
+            for l, p in zip(dl, pos):
+                dline[p] = l
+            decrypted.append(dline)
+            dline = [0] * size
+        
+        txtDecrypted = ""
+        for dl in decrypted:
+            for l in dl:
+                txtDecrypted += l 
+        
+        return txtDecrypted
+                
+    
+    def is_multiplo(self, msg, size):
+        """
+        Se o resto da divizão for zero é multiplo 
+        """
+        return len(msg) % size == 0
+    
+    def fill(self, msg, size):
+        """
+        Verifica se é multiplo caso não seja, 
+        adiciona uma letra aleatório ao fim da mensagem
+        """
+        while not self.is_multiplo(msg, size):
+            msg += self.alfa[randint(0, len(self.alfa) - 1)]
+        
+        return msg
+                 
+                 
+        
 class CesarEncrypt(object):
     
     def __init__(self, key=3):
@@ -11,7 +143,7 @@ class CesarEncrypt(object):
         self.key = key
         
     def separar(self, msg):
-        # Guarda as chaves para as letras das mensagems
+        # Guarda as chaves para as letras das mensagens
         # Exemplo: A = 0, B = 1 e etc.
         chavesMsg = []
         for m in msg.lower():
@@ -90,6 +222,7 @@ class RSAEncrypt(object):
         """
     
         n = p*q                 # Calcula n = pq.
+        self.n = n
                                 
         Eu = (p-1) * (q-1)      # Calcula (pq) = (p - 1)(q - 1).
                                 
@@ -122,7 +255,7 @@ class RSAEncrypt(object):
         self.tuple_encrypted = []
         for x in input_text:
             # adiciona em uma lista cada valor de letra criptografada
-            self.tuple_encrypted.append((long(self.alphabet[x]) ** self.publicKey[1]) % n) 
+            self.tuple_encrypted.append((long(self.alphabet[x]) ** self.publicKey[1]) % self.n) 
             
         encrypted = ''
         for y in  self.tuple_encrypted:
@@ -133,28 +266,32 @@ class RSAEncrypt(object):
     def decrypt(self):
         decrypted = ''
         for x in self.tuple_encrypted:
-            decrypted = decrypted + self.translate[((long(x) ** self.privateKey[1]) % n)]
+            decrypted = decrypted + self.translate[((long(x) ** self.privateKey[1]) % self.n)]
         return decrypted
         
 
 if __name__ == "__main__":
-    print "Algoritmo de criptografia RSA"
-    p = long(raw_input("Valor de p (numero primo):"))
-    q = long(raw_input("Valor de q (numero primo):"))
-    
-    crypto = RSAEncrypt()
-    
-    print "gerando chave publica e privada...."
-    publickey, privatekey = crypto.generateRSAKeys(p, q)
-
-    print "Chave Publica (n, e) =", publickey
-    print "Chave Privada (n, d) =", privatekey
-    
-    n, e = publickey
-    n, d = privatekey
-    
-    input_text = raw_input("Entre com a palavra a ser criptografada:")
-    print(crypto.encrypt(input_text))
-    
-    print "Decriptando com chave privada:"
-    print(crypto.decrypt())
+    trans = TransposicaoEncrypt()
+    cipher_msg = trans.encrypt("Vamos embora fomos descobertos porra", "zebras")
+    print(cipher_msg)
+    print(trans.decrypt(cipher_msg, "zebras"))
+#    print "Algoritmo de criptografia RSA"
+#    p = long(raw_input("Valor de p (numero primo):"))
+#    q = long(raw_input("Valor de q (numero primo):"))
+#    
+#    crypto = RSAEncrypt()
+#    
+#    print "gerando chave publica e privada...."
+#    publickey, privatekey = crypto.generateRSAKeys(p, q)
+#
+#    print "Chave Publica (n, e) =", publickey
+#    print "Chave Privada (n, d) =", privatekey
+#    
+#    n, e = publickey
+#    n, d = privatekey
+#    
+#    input_text = raw_input("Entre com a palavra a ser criptografada:")
+#    print(crypto.encrypt(input_text))
+#    
+#    print "Decriptando com chave privada:"
+#    print(crypto.decrypt())
